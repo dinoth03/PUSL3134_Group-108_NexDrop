@@ -1,0 +1,1122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NexDrop — Login & Sign Up</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,400&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    /*
+       NEXDROP AUTH PAGE
+   */
+    :root {
+      --primary:       #ff3d71;
+      --primary-light: #ff6b9a;
+      --accent:        #00d4aa;
+      --accent2:       #7c3aed;
+      --accent3:       #f59e0b;
+      --dark:          #0f0f1a;
+      --dark2:         #1a1a2e;
+      --surface:       #1e1e32;
+      --surface2:      #252540;
+      --surface3:      #2d2d50;
+      --text-primary:  #f8f8ff;
+      --text-secondary:#a0a0c0;
+      --text-muted:    #6060a0;
+      --border:        rgba(255,255,255,0.08);
+      --font-head:     'Syne', sans-serif;
+      --font-body:     'DM Sans', sans-serif;
+    }
+
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    html { height:100%; }
+
+    body {
+      min-height: 100vh;
+      background: linear-gradient(135deg, #0a0a18 0%, #0d0d2b 50%, #150a2e 100%);
+      font-family: var(--font-body);
+      color: var(--text-primary);
+      overflow-x: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── AMBIENT BLOBS ── */
+    .blob {
+      position: fixed; border-radius: 50%;
+      filter: blur(130px); pointer-events: none; z-index: 0;
+      animation: blobDrift 12s ease-in-out infinite alternate;
+    }
+    .blob-1 { width:700px;height:700px;background:rgba(255,61,113,0.10);top:-200px;left:-200px; }
+    .blob-2 { width:600px;height:600px;background:rgba(124,58,237,0.09);bottom:-150px;right:-150px;animation-delay:-5s; }
+    .blob-3 { width:400px;height:400px;background:rgba(0,212,170,0.07);top:40%;left:35%;animation-delay:-9s; }
+    @keyframes blobDrift {
+      from { transform:translate(0,0) scale(1); }
+      to   { transform:translate(50px,-40px) scale(1.12); }
+    }
+
+    /* ── PARTICLE CANVAS ── */
+    #particles { position:fixed;inset:0;z-index:0;pointer-events:none; }
+
+    /* ── TOP BAR ── */
+    .topbar {
+      position: relative; z-index: 10;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 22px 48px;
+      background: rgba(15,15,26,0.6);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+    }
+    .brand {
+      display: flex; align-items: center; gap: 12px;
+      text-decoration: none; cursor: pointer;
+    }
+    .brand-icon {
+      width: 40px; height: 40px;
+      background: linear-gradient(135deg, var(--primary), var(--accent2));
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px; color: #fff;
+      box-shadow: 0 4px 18px rgba(255,61,113,0.45);
+      animation: iconPulse 3s ease-in-out infinite;
+    }
+    @keyframes iconPulse {
+      0%,100% { box-shadow:0 4px 18px rgba(255,61,113,0.45); }
+      50%      { box-shadow:0 4px 30px rgba(255,61,113,0.75),0 0 60px rgba(255,61,113,0.2); }
+    }
+    .brand-name {
+      font-family: var(--font-head); font-size: 24px; font-weight: 800;
+      background: linear-gradient(135deg,#fff 30%,var(--primary-light));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .topbar-links { display:flex;align-items:center;gap:8px; }
+    .topbar-btn {
+      padding: 9px 22px; border-radius: 10px;
+      font-family: var(--font-head); font-size: 13px; font-weight: 700;
+      cursor: pointer; transition: all 0.22s; border: none;
+    }
+    .topbar-btn.ghost {
+      background: transparent; color: var(--text-secondary);
+      border: 1px solid var(--border);
+    }
+    .topbar-btn.ghost:hover { background:var(--surface);color:var(--text-primary); }
+    .topbar-btn.filled {
+      background: linear-gradient(135deg,var(--primary),var(--accent2));
+      color: #fff;
+      box-shadow: 0 4px 18px rgba(255,61,113,0.35);
+    }
+    .topbar-btn.filled:hover { transform:translateY(-2px);box-shadow:0 8px 28px rgba(255,61,113,0.55); }
+
+    /* ── MAIN LAYOUT ── */
+    .auth-page {
+      flex: 1;
+      position: relative; z-index: 1;
+      display: flex; align-items: stretch;
+      min-height: calc(100vh - 85px);
+    }
+
+    /* ── LEFT SHOWCASE PANEL ── */
+    .showcase {
+      flex: 1;
+      background: linear-gradient(160deg,#0a0820 0%,#160a30 40%,#0a1020 100%);
+      border-right: 1px solid var(--border);
+      padding: 60px 56px;
+      display: flex; flex-direction: column;
+      justify-content: space-between;
+      overflow: hidden; position: relative;
+    }
+    .showcase::before {
+      content:'';position:absolute;inset:0;
+      background:radial-gradient(ellipse at 30% 40%,rgba(255,61,113,0.14),transparent 60%),
+                 radial-gradient(ellipse at 70% 70%,rgba(124,58,237,0.12),transparent 55%);
+    }
+    .showcase-top { position:relative;z-index:1; }
+    .showcase-eyebrow {
+      display: inline-flex; align-items:center; gap:8px;
+      background: rgba(255,61,113,0.12);
+      border: 1px solid rgba(255,61,113,0.25);
+      border-radius: 50px; padding:6px 16px;
+      font-size:11px; font-weight:700; color:var(--primary-light);
+      text-transform:uppercase; letter-spacing:1.5px;
+      margin-bottom:24px;
+    }
+    .showcase-title {
+      font-family: var(--font-head);
+      font-size: clamp(32px,3.5vw,52px); font-weight:800;
+      line-height:1.1; margin-bottom:20px;
+      color: #fff;
+    }
+    .showcase-title span {
+      background: linear-gradient(135deg,var(--primary),var(--accent2));
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+      background-clip:text;
+    }
+    .showcase-desc {
+      font-size:15px; color:rgba(255,255,255,0.55);
+      line-height:1.75; max-width:380px; margin-bottom:40px;
+    }
+
+    /* FEATURE PILLS */
+    .feature-list { display:flex;flex-direction:column;gap:12px;margin-bottom:48px; }
+    .feature-item {
+      display:flex;align-items:center;gap:14px;
+      background:rgba(255,255,255,0.04);
+      border:1px solid rgba(255,255,255,0.07);
+      border-radius:14px; padding:14px 18px;
+      transition:all 0.25s; cursor:default;
+    }
+    .feature-item:hover { background:rgba(255,61,113,0.08);border-color:rgba(255,61,113,0.2);transform:translateX(6px); }
+    .feature-icon {
+      width:38px;height:38px;border-radius:10px;
+      display:flex;align-items:center;justify-content:center;
+      font-size:16px;flex-shrink:0;
+    }
+    .feature-text strong { display:block;font-size:13px;font-weight:700;color:var(--text-primary);margin-bottom:2px; }
+    .feature-text span  { font-size:12px;color:var(--text-muted); }
+
+    /* PRODUCT CAROUSEL */
+    .product-strip {
+      display:flex;gap:14px;overflow:hidden;
+      position:relative;z-index:1;
+    }
+    .strip-card {
+      flex-shrink:0; width:130px;
+      background:rgba(255,255,255,0.05);
+      border:1px solid rgba(255,255,255,0.08);
+      border-radius:16px; overflow:hidden;
+      transition:transform 0.3s;
+    }
+    .strip-card:hover { transform:translateY(-6px) scale(1.03); }
+    .strip-card img { width:100%;height:100px;object-fit:cover;display:block; }
+    .strip-card-info { padding:10px; }
+    .strip-card-info p { font-family:var(--font-head);font-size:11px;font-weight:700;color:var(--text-primary);margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis; }
+    .strip-card-info span { font-size:11px;color:var(--primary);font-weight:700; }
+
+    /* STATS ROW */
+    .stats-row {
+      display:flex;gap:0;
+      background:rgba(255,255,255,0.04);
+      border:1px solid rgba(255,255,255,0.08);
+      border-radius:16px; overflow:hidden;
+      position:relative;z-index:1;
+    }
+    .stat-cell { flex:1;padding:16px;text-align:center;border-right:1px solid rgba(255,255,255,0.07); }
+    .stat-cell:last-child { border-right:none; }
+    .stat-cell strong { display:block;font-family:var(--font-head);font-size:20px;font-weight:800;color:var(--primary); }
+    .stat-cell span   { font-size:11px;color:var(--text-muted); }
+
+    /* ── RIGHT FORM PANEL ── */
+    .form-panel {
+      width: 520px; flex-shrink:0;
+      display:flex; align-items:center; justify-content:center;
+      padding: 40px 48px;
+      background: rgba(15,15,26,0.4);
+      backdrop-filter: blur(10px);
+    }
+    .form-box { width:100%;max-width:420px; }
+
+    /* TABS */
+    .auth-tabs {
+      display:flex; gap:4px;
+      background:var(--surface);
+      border:1px solid var(--border);
+      border-radius:14px; padding:5px;
+      margin-bottom:36px;
+    }
+    .auth-tab {
+      flex:1; padding:10px;
+      border-radius:10px; border:none;
+      font-family:var(--font-head); font-size:14px; font-weight:700;
+      cursor:pointer; transition:all 0.3s;
+      color:var(--text-muted); background:transparent;
+    }
+    .auth-tab.active {
+      background:linear-gradient(135deg,var(--primary),var(--accent2));
+      color:#fff;
+      box-shadow:0 4px 18px rgba(255,61,113,0.35);
+    }
+
+    /* FORM HEADER */
+    .form-header { margin-bottom:28px; }
+    .form-header h2 {
+      font-family:var(--font-head);font-size:28px;font-weight:800;
+      color:var(--text-primary); margin-bottom:6px;
+    }
+    .form-header p { font-size:14px;color:var(--text-muted); }
+
+    /* SOCIAL LOGIN */
+    .social-row { display:flex;gap:10px;margin-bottom:24px; }
+    .social-btn {
+      flex:1;display:flex;align-items:center;justify-content:center;gap:8px;
+      padding:11px; border-radius:12px;
+      background:var(--surface); border:1px solid var(--border);
+      color:var(--text-secondary); font-family:var(--font-body);
+      font-size:13px;font-weight:600; cursor:pointer;
+      transition:all 0.22s;
+    }
+    .social-btn:hover { background:var(--surface3);color:var(--text-primary);border-color:rgba(255,255,255,0.15);transform:translateY(-2px); }
+    .social-btn i { font-size:15px; }
+    .social-btn .g-icon { color:#ea4335; }
+    .social-btn .apple-icon { color:#fff; }
+
+    /* DIVIDER */
+    .divider {
+      display:flex;align-items:center;gap:12px;
+      margin-bottom:24px;
+    }
+    .divider-line { flex:1;height:1px;background:var(--border); }
+    .divider span { font-size:12px;color:var(--text-muted);white-space:nowrap; }
+
+    /* FORM GROUPS */
+    .form-group { margin-bottom:18px; position:relative; }
+    .form-group label {
+      display:block;font-size:11px;font-weight:700;
+      color:var(--text-muted); text-transform:uppercase;
+      letter-spacing:1px; margin-bottom:7px;
+    }
+    .input-wrap {
+      position:relative;display:flex;align-items:center;
+    }
+    .input-icon {
+      position:absolute;left:14px;
+      color:var(--text-muted);font-size:14px;
+      pointer-events:none;transition:color 0.2s;
+      z-index:1;
+    }
+    .form-input {
+      width:100%;
+      background:var(--surface); border:1.5px solid var(--border);
+      border-radius:12px; padding:13px 14px 13px 42px;
+      color:var(--text-primary); font-family:var(--font-body);
+      font-size:14px; outline:none;
+      transition:all 0.25s;
+    }
+    .form-input::placeholder { color:var(--text-muted); }
+    .form-input:focus {
+      border-color:var(--primary);
+      background:rgba(255,61,113,0.06);
+      box-shadow:0 0 0 4px rgba(255,61,113,0.12);
+    }
+    .form-input:focus + .input-icon,
+    .input-wrap:focus-within .input-icon { color:var(--primary); }
+    .input-wrap .input-icon { pointer-events:none; }
+    /* Override for icon inside wrap (after input) */
+    .toggle-pass {
+      position:absolute;right:14px;
+      background:none;border:none;
+      color:var(--text-muted);font-size:14px;cursor:pointer;
+      transition:color 0.2s;padding:4px;
+    }
+    .toggle-pass:hover { color:var(--primary); }
+
+    /* INLINE VALIDATION */
+    .field-error {
+      font-size:11px;color:#ef4444;margin-top:5px;
+      display:none;align-items:center;gap:4px;
+    }
+    .field-error.show { display:flex; }
+    .field-success {
+      position:absolute;right:44px;top:50%;transform:translateY(-50%);
+      color:var(--accent);font-size:14px;display:none;
+    }
+    .field-success.show { display:block; }
+
+    /* NAME ROW */
+    .name-row { display:grid;grid-template-columns:1fr 1fr;gap:12px; }
+
+    /* PASSWORD STRENGTH */
+    .strength-bar {
+      display:flex;gap:4px;margin-top:8px;
+    }
+    .strength-seg {
+      flex:1;height:3px;border-radius:2px;
+      background:var(--surface3);transition:background 0.3s;
+    }
+    .strength-label { font-size:11px;color:var(--text-muted);margin-top:5px; }
+
+    /* CHECKBOX */
+    .check-row {
+      display:flex;align-items:flex-start;gap:10px;
+      margin-bottom:20px;
+    }
+    .custom-check {
+      width:18px;height:18px;border-radius:5px;
+      background:var(--surface);border:1.5px solid var(--border);
+      flex-shrink:0;cursor:pointer;
+      display:flex;align-items:center;justify-content:center;
+      transition:all 0.2s;margin-top:1px;
+    }
+    .custom-check.checked {
+      background:linear-gradient(135deg,var(--primary),var(--accent2));
+      border-color:transparent;
+    }
+    .custom-check i { font-size:10px;color:#fff;display:none; }
+    .custom-check.checked i { display:block; }
+    .check-row label { font-size:13px;color:var(--text-secondary);cursor:pointer;line-height:1.5; }
+    .check-row label a { color:var(--primary);text-decoration:none; }
+    .check-row label a:hover { text-decoration:underline; }
+
+    /* FORGOT */
+    .forgot-row {
+      display:flex;align-items:center;justify-content:space-between;
+      margin-bottom:20px;
+    }
+    .forgot-link {
+      font-size:13px;color:var(--primary);text-decoration:none;font-weight:600;
+      transition:opacity 0.2s;
+    }
+    .forgot-link:hover { opacity:0.75; }
+
+    /* SUBMIT BUTTON */
+    .submit-btn {
+      width:100%;padding:15px;border:none;border-radius:14px;
+      background:linear-gradient(135deg,var(--primary),var(--accent2));
+      color:#fff;font-family:var(--font-head);font-size:16px;font-weight:700;
+      cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;
+      box-shadow:0 8px 28px rgba(255,61,113,0.4);
+      transition:all 0.3s; position:relative; overflow:hidden;
+      margin-bottom:20px;
+    }
+    .submit-btn::before {
+      content:'';position:absolute;inset:0;
+      background:linear-gradient(135deg,rgba(255,255,255,0.1),transparent);
+      opacity:0;transition:opacity 0.2s;
+    }
+    .submit-btn:hover { transform:translateY(-3px);box-shadow:0 14px 40px rgba(255,61,113,0.6); }
+    .submit-btn:hover::before { opacity:1; }
+    .submit-btn:active { transform:translateY(0);box-shadow:0 4px 16px rgba(255,61,113,0.4); }
+    .submit-btn.loading { pointer-events:none;opacity:0.85; }
+    .btn-spinner { display:none;width:18px;height:18px;border:2px solid rgba(255,255,255,0.4);border-top-color:#fff;border-radius:50%;animation:spin 0.7s linear infinite; }
+    .submit-btn.loading .btn-spinner { display:block; }
+    .submit-btn.loading .btn-text { display:none; }
+    @keyframes spin { to { transform:rotate(360deg); } }
+
+    /* FOOTER NOTE */
+    .form-footer-note {
+      text-align:center;font-size:13px;color:var(--text-muted);
+    }
+    .form-footer-note a { color:var(--primary);text-decoration:none;font-weight:700; }
+    .form-footer-note a:hover { text-decoration:underline; }
+
+    /* SUCCESS STATE */
+    .success-screen {
+      display:none;flex-direction:column;align-items:center;
+      text-align:center;padding:20px 0;
+      animation:pageFade 0.5s ease;
+    }
+    .success-screen.show { display:flex; }
+    @keyframes pageFade { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+    .success-ring {
+      width:90px;height:90px;border-radius:50%;
+      background:linear-gradient(135deg,var(--accent),#00a882);
+      display:flex;align-items:center;justify-content:center;
+      font-size:38px;color:#fff;margin-bottom:24px;
+      box-shadow:0 0 50px rgba(0,212,170,0.5);
+      animation:successPop 0.5s cubic-bezier(0.23,1,0.32,1);
+    }
+    @keyframes successPop { from{transform:scale(0.4);opacity:0} to{transform:scale(1);opacity:1} }
+    .success-screen h2 { font-family:var(--font-head);font-size:26px;font-weight:800;color:var(--text-primary);margin-bottom:8px; }
+    .success-screen p  { font-size:14px;color:var(--text-muted);margin-bottom:28px;line-height:1.6; }
+    .goto-btn {
+      display:inline-flex;align-items:center;gap:8px;
+      padding:13px 32px;border-radius:12px;
+      background:linear-gradient(135deg,var(--primary),var(--accent2));
+      color:#fff;font-family:var(--font-head);font-size:15px;font-weight:700;
+      text-decoration:none;border:none;cursor:pointer;
+      box-shadow:0 6px 24px rgba(255,61,113,0.4);
+      transition:all 0.25s;
+    }
+    .goto-btn:hover { transform:translateY(-3px);box-shadow:0 12px 32px rgba(255,61,113,0.55); }
+
+    /* ── FORM STATES (show/hide) ── */
+    .auth-form { display:none; }
+    .auth-form.active { display:block;animation:pageFade 0.35s ease; }
+
+    /* ── TOAST ── */
+    .toast {
+      position:fixed;bottom:30px;left:50%;
+      transform:translateX(-50%) translateY(20px);
+      background:linear-gradient(135deg,var(--accent),#00b890);
+      color:#fff;padding:12px 28px;border-radius:50px;
+      font-size:14px;font-weight:700;font-family:var(--font-head);
+      opacity:0;transition:all 0.35s cubic-bezier(0.23,1,0.32,1);
+      pointer-events:none;z-index:9999;white-space:nowrap;
+      box-shadow:0 8px 30px rgba(0,0,0,0.4);
+    }
+    .toast.show { opacity:1;transform:translateX(-50%) translateY(0); }
+    .toast.error { background:linear-gradient(135deg,#ef4444,#b91c1c); }
+
+    /* ── VERSION SWITCHER FAB ── */
+    .vs-fab {
+      position:fixed;bottom:28px;right:28px;
+      z-index:99999;
+      display:flex;flex-direction:column;align-items:flex-end;gap:10px;
+    }
+    .vs-fab-panel {
+      background:rgba(15,15,26,0.97);
+      border:1px solid rgba(255,255,255,0.1);
+      border-radius:18px;padding:18px 16px;
+      backdrop-filter:blur(24px);
+      box-shadow:0 20px 50px rgba(0,0,0,0.5);
+      display:none;flex-direction:column;gap:8px;
+      min-width:200px;
+    }
+    .vs-fab-panel.open { display:flex;animation:pageFade 0.25s ease; }
+    .vs-fab-sect { font-family:var(--font-head);font-size:9px;font-weight:800;color:var(--text-muted);text-transform:uppercase;letter-spacing:2px;padding-bottom:8px;border-bottom:1px solid var(--border);margin-bottom:2px; }
+    .vs-fab-link {
+      display:flex;align-items:center;gap:10px;
+      padding:10px 12px;border-radius:11px;
+      border:1px solid var(--border);
+      background:rgba(255,255,255,0.04);
+      color:var(--text-secondary);font-family:var(--font-body);
+      font-size:13px;font-weight:600;
+      text-decoration:none;transition:all 0.2s;
+    }
+    .vs-fab-link:hover { background:rgba(255,61,113,0.15);border-color:var(--primary);color:#fff; }
+    .vs-fab-link.vs-active { background:linear-gradient(135deg,rgba(255,61,113,0.2),rgba(124,58,237,0.2));border-color:var(--primary);color:#fff; }
+    .vs-fab-ico { width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;background:rgba(255,255,255,0.07);color:var(--text-muted); }
+    .vs-fab-link.vs-active .vs-fab-ico { background:linear-gradient(135deg,var(--primary),var(--accent2));color:#fff; }
+    .vs-now { font-size:8px;background:var(--primary);color:#fff;padding:1px 6px;border-radius:4px;font-weight:800;margin-left:auto; }
+    .vs-fab-btn {
+      width:52px;height:52px;
+      background:linear-gradient(135deg,var(--primary),var(--accent2));
+      border:none;border-radius:16px;color:#fff;font-size:20px;
+      cursor:pointer;display:flex;align-items:center;justify-content:center;
+      box-shadow:0 8px 28px rgba(255,61,113,0.5);
+      transition:all 0.25s;
+    }
+    .vs-fab-btn:hover { transform:scale(1.1) rotate(-5deg);box-shadow:0 12px 36px rgba(255,61,113,0.7); }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 960px) {
+      .showcase { display:none; }
+      .form-panel { width:100%;padding:32px 28px; }
+      .topbar { padding:16px 24px; }
+    }
+    @media (max-width: 500px) {
+      .form-panel { padding:24px 20px; }
+      .name-row { grid-template-columns:1fr; }
+      .social-row { flex-direction:column; }
+      .topbar-links .topbar-btn.ghost { display:none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- AMBIENT -->
+<div class="blob blob-1"></div>
+<div class="blob blob-2"></div>
+<div class="blob blob-3"></div>
+<canvas id="particles"></canvas>
+<div class="toast" id="toast"></div>
+
+<!-- TOP BAR -->
+<header class="topbar">
+  <a class="brand" href="Web ui.html">
+    <div class="brand-icon"><i class="fas fa-bolt"></i></div>
+    <span class="brand-name">NexDrop</span>
+  </a>
+  <div class="topbar-links">
+    <button class="topbar-btn ghost" onclick="switchTab('login')">Sign In</button>
+    <button class="topbar-btn filled" onclick="switchTab('signup')">Create Account</button>
+  </div>
+</header>
+
+<!-- MAIN -->
+<div class="auth-page">
+
+  <!-- LEFT SHOWCASE -->
+  <div class="showcase">
+    <div class="showcase-top">
+      <div class="showcase-eyebrow"><i class="fas fa-bolt"></i> Next-Gen Gadgets</div>
+      <h1 class="showcase-title">Your Gateway to<br/><span>Premium Tech</span></h1>
+      <p class="showcase-desc">Join over 2 million customers who trust NexDrop for the latest smartphones, tablets, and accessories — delivered fast with unbeatable prices.</p>
+
+      <div class="feature-list">
+        <div class="feature-item">
+          <div class="feature-icon" style="background:rgba(255,61,113,0.15)"><i class="fas fa-tags" style="color:#ff3d71"></i></div>
+          <div class="feature-text">
+            <strong>Exclusive Member Deals</strong>
+            <span>Up to 60% off on top brands — members only</span>
+          </div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon" style="background:rgba(0,212,170,0.15)"><i class="fas fa-truck" style="color:#00d4aa"></i></div>
+          <div class="feature-text">
+            <strong>Free Express Delivery</strong>
+            <span>Free shipping on all orders over $999</span>
+          </div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon" style="background:rgba(124,58,237,0.15)"><i class="fas fa-shield-alt" style="color:#7c3aed"></i></div>
+          <div class="feature-text">
+            <strong>Secure & Trusted</strong>
+            <span>SSL encrypted checkout, 30-day returns</span>
+          </div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon" style="background:rgba(245,158,11,0.15)"><i class="fas fa-star" style="color:#f59e0b"></i></div>
+          <div class="feature-text">
+            <strong>Earn Reward Points</strong>
+            <span>Every purchase earns NexPoints redeemable for discounts</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PRODUCT STRIP -->
+    <div>
+      <div class="product-strip" id="productStrip">
+        <div class="strip-card">
+          <img src="https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=260&h=200&fit=crop" alt="iPhone" />
+          <div class="strip-card-info"><p>iPhone 16 Pro</p><span>$1,199</span></div>
+        </div>
+        <div class="strip-card">
+          <img src="https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=260&h=200&fit=crop" alt="iPad" />
+          <div class="strip-card-info"><p>iPad Pro M4</p><span>$1,299</span></div>
+        </div>
+        <div class="strip-card">
+          <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=260&h=200&fit=crop" alt="Headphones" />
+          <div class="strip-card-info"><p>WH-1000XM6</p><span>$349</span></div>
+        </div>
+        <div class="strip-card">
+          <img src="https://images.unsplash.com/photo-1546868871-7041f2a55e12?w=260&h=200&fit=crop" alt="Watch" />
+          <div class="strip-card-info"><p>Watch Ultra 3</p><span>$799</span></div>
+        </div>
+        <div class="strip-card">
+          <img src="https://images.unsplash.com/photo-1585060544812-6b45742d762f?w=260&h=200&fit=crop" alt="Galaxy" />
+          <div class="strip-card-info"><p>Galaxy S25</p><span>$1,099</span></div>
+        </div>
+      </div>
+
+      <div class="stats-row" style="margin-top:20px">
+        <div class="stat-cell"><strong>50K+</strong><span>Products</span></div>
+        <div class="stat-cell"><strong>2M+</strong><span>Customers</span></div>
+        <div class="stat-cell"><strong>120+</strong><span>Brands</span></div>
+        <div class="stat-cell"><strong>★ 4.9</strong><span>Rating</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT FORM PANEL -->
+  <div class="form-panel">
+    <div class="form-box">
+
+      <!-- TABS -->
+      <div class="auth-tabs">
+        <button class="auth-tab active" id="tab-login" onclick="switchTab('login')">
+          <i class="fas fa-sign-in-alt" style="margin-right:6px"></i>Sign In
+        </button>
+        <button class="auth-tab" id="tab-signup" onclick="switchTab('signup')">
+          <i class="fas fa-user-plus" style="margin-right:6px"></i>Sign Up
+        </button>
+      </div>
+
+      <!-- ====== LOGIN FORM ====== -->
+      <div class="auth-form active" id="form-login">
+        <div class="form-header">
+          <h2>Welcome back 👋</h2>
+          <p>Sign in to access your NexDrop account</p>
+        </div>
+
+        <!-- SOCIAL -->
+        <div class="social-row">
+          <button class="social-btn" onclick="socialLogin('Google')">
+            <i class="fab fa-google g-icon"></i> Google
+          </button>
+          <button class="social-btn" onclick="socialLogin('Apple')">
+            <i class="fab fa-apple apple-icon"></i> Apple
+          </button>
+          <button class="social-btn" onclick="socialLogin('Facebook')">
+            <i class="fab fa-facebook-f" style="color:#1877f2"></i> Facebook
+          </button>
+        </div>
+
+        <div class="divider">
+          <div class="divider-line"></div>
+          <span>or continue with email</span>
+          <div class="divider-line"></div>
+        </div>
+
+        <!-- EMAIL -->
+        <div class="form-group">
+          <label>Email Address</label>
+          <div class="input-wrap">
+            <i class="fas fa-envelope input-icon"></i>
+            <input type="email" class="form-input" id="login-email" placeholder="you@email.com" oninput="validateEmail('login-email','login-email-err','login-email-ok')" />
+            <i class="fas fa-check-circle field-success" id="login-email-ok"></i>
+            <button class="toggle-pass" style="right:14px;font-size:0"></button>
+          </div>
+          <div class="field-error" id="login-email-err"><i class="fas fa-exclamation-circle"></i> <span></span></div>
+        </div>
+
+        <!-- PASSWORD -->
+        <div class="form-group">
+          <label>Password</label>
+          <div class="input-wrap">
+            <i class="fas fa-lock input-icon"></i>
+            <input type="password" class="form-input" id="login-pass" placeholder="Enter your password" />
+            <button class="toggle-pass" onclick="togglePassword('login-pass',this)" type="button">
+              <i class="fas fa-eye"></i>
+            </button>
+          </div>
+          <div class="field-error" id="login-pass-err"><i class="fas fa-exclamation-circle"></i> <span></span></div>
+        </div>
+
+        <!-- REMEMBER + FORGOT -->
+        <div class="forgot-row">
+          <div style="display:flex;align-items:center;gap:8px">
+            <div class="custom-check" id="remember-check" onclick="this.classList.toggle('checked');this.querySelector('i').style.display=this.classList.contains('checked')?'block':'none'">
+              <i class="fas fa-check"></i>
+            </div>
+            <label style="font-size:13px;color:var(--text-secondary);cursor:pointer" onclick="document.getElementById('remember-check').click()">Remember me</label>
+          </div>
+          <a href="#" class="forgot-link" onclick="showForgot();return false">Forgot password?</a>
+        </div>
+
+        <button class="submit-btn" onclick="handleLogin()">
+          <div class="btn-spinner"></div>
+          <span class="btn-text"><i class="fas fa-sign-in-alt"></i> Sign In to NexDrop</span>
+        </button>
+
+        <div class="form-footer-note">
+          Don't have an account? <a href="#" onclick="switchTab('signup');return false">Create one free →</a>
+        </div>
+      </div>
+
+      <!-- SIGNUP FORM  -->
+      <div class="auth-form" id="form-signup">
+        <div class="form-header">
+          <h2>Create account ✨</h2>
+          <p>Join NexDrop — it's free and takes 30 seconds</p>
+        </div>
+
+        <!-- SOCIAL -->
+        <div class="social-row">
+          <button class="social-btn" onclick="socialLogin('Google')">
+            <i class="fab fa-google g-icon"></i> Google
+          </button>
+          <button class="social-btn" onclick="socialLogin('Apple')">
+            <i class="fab fa-apple apple-icon"></i> Apple
+          </button>
+          <button class="social-btn" onclick="socialLogin('Facebook')">
+            <i class="fab fa-facebook-f" style="color:#1877f2"></i> Facebook
+          </button>
+        </div>
+
+        <div class="divider">
+          <div class="divider-line"></div>
+          <span>or sign up with email</span>
+          <div class="divider-line"></div>
+        </div>
+
+        <!-- NAME ROW -->
+        <div class="name-row">
+          <div class="form-group">
+            <label>First Name</label>
+            <div class="input-wrap">
+              <i class="fas fa-user input-icon"></i>
+              <input type="text" class="form-input" id="signup-fname" placeholder="Alex" oninput="validateName('signup-fname','signup-fname-err')" />
+            </div>
+            <div class="field-error" id="signup-fname-err"><i class="fas fa-exclamation-circle"></i> <span></span></div>
+          </div>
+          <div class="form-group">
+            <label>Last Name</label>
+            <div class="input-wrap">
+              <i class="fas fa-user input-icon"></i>
+              <input type="text" class="form-input" id="signup-lname" placeholder="Chen" />
+            </div>
+          </div>
+        </div>
+
+        <!-- EMAIL -->
+        <div class="form-group">
+          <label>Email Address</label>
+          <div class="input-wrap">
+            <i class="fas fa-envelope input-icon"></i>
+            <input type="email" class="form-input" id="signup-email" placeholder="you@email.com" oninput="validateEmail('signup-email','signup-email-err','signup-email-ok')" />
+            <i class="fas fa-check-circle field-success" id="signup-email-ok"></i>
+          </div>
+          <div class="field-error" id="signup-email-err"><i class="fas fa-exclamation-circle"></i> <span></span></div>
+        </div>
+
+        <!-- PHONE (optional) -->
+        <div class="form-group">
+          <label>Phone <span style="color:var(--text-muted);font-weight:400;text-transform:none;letter-spacing:0">(optional)</span></label>
+          <div class="input-wrap">
+            <i class="fas fa-phone input-icon"></i>
+            <input type="tel" class="form-input" id="signup-phone" placeholder="+1 (555) 000-0000" />
+          </div>
+        </div>
+
+        <!-- PASSWORD -->
+        <div class="form-group">
+          <label>Password</label>
+          <div class="input-wrap">
+            <i class="fas fa-lock input-icon"></i>
+            <input type="password" class="form-input" id="signup-pass" placeholder="Create a strong password" oninput="checkStrength(this.value)" />
+            <button class="toggle-pass" onclick="togglePassword('signup-pass',this)" type="button">
+              <i class="fas fa-eye"></i>
+            </button>
+          </div>
+          <div class="strength-bar" id="strength-bar">
+            <div class="strength-seg" id="s1"></div>
+            <div class="strength-seg" id="s2"></div>
+            <div class="strength-seg" id="s3"></div>
+            <div class="strength-seg" id="s4"></div>
+          </div>
+          <div class="strength-label" id="strength-label"></div>
+          <div class="field-error" id="signup-pass-err"><i class="fas fa-exclamation-circle"></i> <span></span></div>
+        </div>
+
+        <!-- CONFIRM PASSWORD -->
+        <div class="form-group">
+          <label>Confirm Password</label>
+          <div class="input-wrap">
+            <i class="fas fa-lock input-icon"></i>
+            <input type="password" class="form-input" id="signup-confirm" placeholder="Repeat your password" oninput="checkConfirm()" />
+            <i class="fas fa-check-circle field-success" id="confirm-ok"></i>
+            <button class="toggle-pass" onclick="togglePassword('signup-confirm',this)" type="button">
+              <i class="fas fa-eye"></i>
+            </button>
+          </div>
+          <div class="field-error" id="signup-confirm-err"><i class="fas fa-exclamation-circle"></i> <span></span></div>
+        </div>
+
+        <!-- TERMS -->
+        <div class="check-row">
+          <div class="custom-check" id="terms-check" onclick="this.classList.toggle('checked');toggleTermsIcon(this)">
+            <i class="fas fa-check"></i>
+          </div>
+          <label onclick="document.getElementById('terms-check').click()">
+            I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>
+          </label>
+        </div>
+
+        <button class="submit-btn" onclick="handleSignup()">
+          <div class="btn-spinner"></div>
+          <span class="btn-text"><i class="fas fa-user-plus"></i> Create My Account</span>
+        </button>
+
+        <div class="form-footer-note">
+          Already have an account? <a href="#" onclick="switchTab('login');return false">Sign in →</a>
+        </div>
+      </div>
+
+      <!--  FORGOT PASSWORD FORM  -->
+      <div class="auth-form" id="form-forgot">
+        <div class="form-header">
+          <h2>Reset password 🔑</h2>
+          <p>Enter your email and we'll send you a reset link</p>
+        </div>
+        <div class="form-group">
+          <label>Email Address</label>
+          <div class="input-wrap">
+            <i class="fas fa-envelope input-icon"></i>
+            <input type="email" class="form-input" id="forgot-email" placeholder="you@email.com" />
+          </div>
+        </div>
+        <button class="submit-btn" onclick="handleForgot()" style="margin-bottom:16px">
+          <div class="btn-spinner"></div>
+          <span class="btn-text"><i class="fas fa-paper-plane"></i> Send Reset Link</span>
+        </button>
+        <div class="form-footer-note">
+          <a href="#" onclick="switchTab('login');return false">← Back to Sign In</a>
+        </div>
+      </div>
+
+      <!--  SUCCESS SCREEN  -->
+      <div class="success-screen" id="success-screen">
+        <div class="success-ring"><i class="fas fa-check"></i></div>
+        <h2 id="success-title">You're in! 🎉</h2>
+        <p id="success-msg">Your NexDrop account has been created.<br/>Start exploring next-gen gadgets.</p>
+        <a class="goto-btn" href="Web ui.html">
+          <i class="fas fa-store"></i> Go to Web App
+        </a>
+        <div style="margin-top:12px">
+          <a class="goto-btn" href="Mobile ui.html" style="background:linear-gradient(135deg,var(--accent2),var(--accent));box-shadow:0 6px 24px rgba(124,58,237,0.4)">
+            <i class="fas fa-mobile-alt"></i> Open Mobile UI
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div><!-- /auth-page -->
+
+<!-- VERSION SWITCHER FAB -->
+<div class="vs-fab">
+  <div class="vs-fab-panel" id="vs-fab-panel">
+    <div class="vs-fab-sect">⚡ Switch Version</div>
+    <a class="vs-fab-link vs-active" href="index.html">
+      <span class="vs-fab-ico"><i class="fas fa-key"></i></span>
+      Login / Sign Up <span class="vs-now">NOW</span>
+    </a>
+    <a class="vs-fab-link" href="Web ui.html">
+      <span class="vs-fab-ico"><i class="fas fa-desktop"></i></span>
+      Web App
+    </a>
+    <a class="vs-fab-link" href="Mobile ui.html">
+      <span class="vs-fab-ico"><i class="fas fa-mobile-alt"></i></span>
+      Mobile UI
+    </a>
+  </div>
+  <button class="vs-fab-btn" onclick="document.getElementById('vs-fab-panel').classList.toggle('open')" title="Switch Version">
+    <i class="fas fa-bolt"></i>
+  </button>
+</div>
+
+<script>
+/*  TAB SWITCHING  */
+function switchTab(tab) {
+  ['login','signup','forgot'].forEach(t => {
+    document.getElementById('form-' + t).classList.remove('active');
+    const tabEl = document.getElementById('tab-' + t);
+    if (tabEl) tabEl.classList.remove('active');
+  });
+  document.getElementById('success-screen').classList.remove('show');
+  const form = document.getElementById('form-' + tab);
+  if (form) form.classList.add('active');
+  const tabEl = document.getElementById('tab-' + tab);
+  if (tabEl) tabEl.classList.add('active');
+}
+
+function showForgot() {
+  ['login','signup'].forEach(t => {
+    document.getElementById('form-' + t).classList.remove('active');
+    const el = document.getElementById('tab-' + t);
+    if (el) el.classList.remove('active');
+  });
+  document.getElementById('form-forgot').classList.add('active');
+}
+
+/*  SHOW SUCCESS  */
+function showSuccess(title, msg) {
+  ['login','signup','forgot'].forEach(t => document.getElementById('form-' + t).classList.remove('active'));
+  document.getElementById('success-title').textContent = title;
+  document.getElementById('success-msg').innerHTML = msg;
+  document.getElementById('success-screen').classList.add('show');
+}
+
+/*  PASSWORD TOGGLE  */
+function togglePassword(inputId, btn) {
+  const input = document.getElementById(inputId);
+  const icon  = btn.querySelector('i');
+  if (input.type === 'password') {
+    input.type = 'text';
+    icon.className = 'fas fa-eye-slash';
+  } else {
+    input.type = 'password';
+    icon.className = 'fas fa-eye';
+  }
+}
+
+/*  VALIDATION  */
+function validateEmail(inputId, errId, okId) {
+  const val = document.getElementById(inputId).value;
+  const errEl = document.getElementById(errId);
+  const okEl  = document.getElementById(okId);
+  const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (val && !re.test(val)) {
+    showFieldErr(errEl, 'Please enter a valid email address');
+    if (okEl) okEl.classList.remove('show');
+  } else if (val && re.test(val)) {
+    hideFieldErr(errEl);
+    if (okEl) okEl.classList.add('show');
+  } else {
+    hideFieldErr(errEl);
+    if (okEl) okEl.classList.remove('show');
+  }
+}
+
+function validateName(inputId, errId) {
+  const val = document.getElementById(inputId).value;
+  const errEl = document.getElementById(errId);
+  if (val && val.length < 2) showFieldErr(errEl, 'Name must be at least 2 characters');
+  else hideFieldErr(errEl);
+}
+
+function checkStrength(pass) {
+  const segs = [document.getElementById('s1'),document.getElementById('s2'),document.getElementById('s3'),document.getElementById('s4')];
+  const label = document.getElementById('strength-label');
+  let score = 0;
+  if (pass.length >= 8) score++;
+  if (/[A-Z]/.test(pass)) score++;
+  if (/[0-9]/.test(pass)) score++;
+  if (/[^A-Za-z0-9]/.test(pass)) score++;
+  const colors = ['#ef4444','#f59e0b','#3b82f6','#00d4aa'];
+  const labels = ['Weak','Fair','Good','Strong'];
+  segs.forEach((s,i) => { s.style.background = i < score ? colors[score-1] : 'var(--surface3)'; });
+  label.textContent = pass ? labels[score-1] || '' : '';
+  label.style.color = pass ? colors[score-1] : 'var(--text-muted)';
+}
+
+function checkConfirm() {
+  const pass    = document.getElementById('signup-pass').value;
+  const confirm = document.getElementById('signup-confirm').value;
+  const errEl   = document.getElementById('signup-confirm-err');
+  const okEl    = document.getElementById('confirm-ok');
+  if (confirm && pass !== confirm) {
+    showFieldErr(errEl, 'Passwords do not match');
+    okEl.classList.remove('show');
+  } else if (confirm && pass === confirm) {
+    hideFieldErr(errEl);
+    okEl.classList.add('show');
+  } else {
+    hideFieldErr(errEl); okEl.classList.remove('show');
+  }
+}
+
+function showFieldErr(el, msg) {
+  el.querySelector('span').textContent = msg;
+  el.classList.add('show');
+}
+function hideFieldErr(el) { el.classList.remove('show'); }
+
+/*  FORM HANDLERS  */
+function handleLogin() {
+  const email = document.getElementById('login-email').value.trim();
+  const pass  = document.getElementById('login-pass').value;
+  if (!email) { showFieldErr(document.getElementById('login-email-err'), 'Email is required'); return; }
+  if (!pass)  { showFieldErr(document.getElementById('login-pass-err'),  'Password is required'); return; }
+  const btn = document.querySelector('#form-login .submit-btn');
+  btn.classList.add('loading');
+  setTimeout(() => {
+    btn.classList.remove('loading');
+    window.location.href = 'Web ui.html';
+  }, 1800);
+}
+
+function handleSignup() {
+  const fname   = document.getElementById('signup-fname').value.trim();
+  const email   = document.getElementById('signup-email').value.trim();
+  const pass    = document.getElementById('signup-pass').value;
+  const confirm = document.getElementById('signup-confirm').value;
+  const terms   = document.getElementById('terms-check').classList.contains('checked');
+  const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  if (!fname)             { showFieldErr(document.getElementById('signup-fname-err'), 'First name is required'); return; }
+  if (!email || !re.test(email)) { showFieldErr(document.getElementById('signup-email-err'), 'Valid email is required'); return; }
+  if (pass.length < 6)    { showFieldErr(document.getElementById('signup-pass-err'), 'Password must be at least 6 characters'); return; }
+  if (pass !== confirm)   { showFieldErr(document.getElementById('signup-confirm-err'), 'Passwords do not match'); return; }
+  if (!terms)             { showToast('Please accept the Terms of Service', true); return; }
+
+  const btn = document.querySelector('#form-signup .submit-btn');
+  btn.classList.add('loading');
+  setTimeout(() => {
+    btn.classList.remove('loading');
+    showSuccess("You're in! 🎉", `Account created for <strong>${fname}</strong>.<br/>Start exploring next-gen gadgets now.`);
+  }, 2000);
+}
+
+function handleForgot() {
+  const email = document.getElementById('forgot-email').value.trim();
+  if (!email) { showToast('Please enter your email address', true); return; }
+  const btn = document.querySelector('#form-forgot .submit-btn');
+  btn.classList.add('loading');
+  setTimeout(() => {
+    btn.classList.remove('loading');
+    showToast('✉️ Reset link sent! Check your inbox.');
+    setTimeout(() => switchTab('login'), 2500);
+  }, 1600);
+}
+
+function socialLogin(provider) {
+  showToast('🔗 Connecting to ' + provider + '…');
+  setTimeout(() => {
+    window.location.href = 'Web ui.html';
+  }, 1800);
+}
+
+function toggleTermsIcon(el) {
+  el.querySelector('i').style.display = el.classList.contains('checked') ? 'block' : 'none';
+}
+
+/* ===== TOAST ===== */
+let toastTimer;
+function showToast(msg, isError) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast' + (isError ? ' error' : '');
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+/*  PARTICLE CANVAS */
+(function(){
+  const canvas = document.getElementById('particles');
+  const ctx = canvas.getContext('2d');
+  let W, H, particles = [];
+
+  function resize() {
+    W = canvas.width  = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+  }
+  window.addEventListener('resize', resize);
+  resize();
+
+  class Particle {
+    constructor() { this.reset(); }
+    reset() {
+      this.x  = Math.random() * W;
+      this.y  = Math.random() * H;
+      this.r  = Math.random() * 1.8 + 0.4;
+      this.vx = (Math.random() - 0.5) * 0.4;
+      this.vy = (Math.random() - 0.5) * 0.4;
+      const palette = ['rgba(255,61,113,', 'rgba(124,58,237,', 'rgba(0,212,170,', 'rgba(245,158,11,'];
+      this.color = palette[Math.floor(Math.random() * palette.length)] + (Math.random() * 0.5 + 0.2) + ')';
+    }
+    update() {
+      this.x += this.vx; this.y += this.vy;
+      if (this.x < 0 || this.x > W || this.y < 0 || this.y > H) this.reset();
+    }
+    draw() {
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+      ctx.fillStyle = this.color;
+      ctx.fill();
+    }
+  }
+
+  for (let i = 0; i < 120; i++) particles.push(new Particle());
+
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+    // draw connections
+    for (let i = 0; i < particles.length; i++) {
+      for (let j = i + 1; j < particles.length; j++) {
+        const dx = particles[i].x - particles[j].x;
+        const dy = particles[i].y - particles[j].y;
+        const dist = Math.sqrt(dx*dx + dy*dy);
+        if (dist < 100) {
+          ctx.beginPath();
+          ctx.moveTo(particles[i].x, particles[i].y);
+          ctx.lineTo(particles[j].x, particles[j].y);
+          ctx.strokeStyle = `rgba(255,61,113,${0.06 * (1 - dist/100)})`;
+          ctx.lineWidth = 0.5;
+          ctx.stroke();
+        }
+      }
+    }
+    particles.forEach(p => { p.update(); p.draw(); });
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+/*  INPUT ENTER KEY  */
+document.addEventListener('keydown', e => {
+  if (e.key === 'Enter') {
+    const activeForm = document.querySelector('.auth-form.active');
+    if (!activeForm) return;
+    if (activeForm.id === 'form-login')  handleLogin();
+    if (activeForm.id === 'form-signup') handleSignup();
+    if (activeForm.id === 'form-forgot') handleForgot();
+  }
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NexDrop — Next-Gen Gadgets</title>
+  <link rel="stylesheet" href="Web ui.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,400&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+</head>
+<body>
+
+<div class="bg-blob b1"></div>
+<div class="bg-blob b2"></div>
+<div class="bg-blob b3"></div>
+<div class="toast" id="toast"></div>
+
+<!-- CART DRAWER -->
+<div class="cart-overlay" id="cart-overlay" onclick="closeCart()"></div>
+<aside class="cart-drawer" id="cart-drawer">
+  <div class="cart-drawer-header">
+    <h2><i class="fas fa-shopping-bag"></i> My Cart <span class="cart-count-label" id="cart-count-label">0</span></h2>
+    <button class="drawer-close" onclick="closeCart()"><i class="fas fa-times"></i></button>
+  </div>
+  <div class="cart-drawer-items" id="cart-drawer-items"></div>
+  <div class="cart-drawer-footer" id="cart-drawer-footer"></div>
+</aside>
+
+<!-- PRODUCT MODAL -->
+<div class="modal-overlay" id="modal-overlay" onclick="closeModal()"></div>
+<div class="product-modal" id="product-modal">
+  <div class="product-modal-inner" id="modal-content"></div>
+</div>
+
+<!-- TOPNAV -->
+<header class="topnav" id="topnav">
+  <div class="nav-brand" onclick="showPage('home')">
+    <div class="brand-icon"><i class="fas fa-bolt"></i></div>
+    <span class="brand-text">NexDrop</span>
+  </div>
+  <nav class="nav-links">
+    <a class="nav-link active" data-page="home" onclick="showPage('home');setActiveNav(this)">Home</a>
+    <a class="nav-link" data-page="phones" onclick="showPage('phones');setActiveNav(this)">Phones</a>
+    <a class="nav-link" data-page="tabs" onclick="showPage('tabs');setActiveNav(this)">Tablets</a>
+    <a class="nav-link" data-page="accessories" onclick="showPage('accessories');setActiveNav(this)">Accessories</a>
+    <a class="nav-link deals-link" data-page="deals" onclick="showPage('deals');setActiveNav(this)"><i class="fas fa-fire"></i> Deals</a>
+  </nav>
+  <div class="nav-actions">
+    <div class="nav-search-wrap">
+      <i class="fas fa-search"></i>
+      <input type="text" placeholder="Search gadgets…" id="global-search" oninput="handleSearch(this.value)" />
+    </div>
+    <button class="nav-icon-btn" title="Wishlist" onclick="showPage('wishlist')">
+      <i class="fas fa-heart"></i>
+      <span class="nav-badge" id="wish-badge" style="display:none">0</span>
+    </button>
+    <button class="nav-icon-btn cart-trigger" title="Cart" onclick="openCart()">
+      <i class="fas fa-shopping-bag"></i>
+      <span class="nav-badge" id="cart-badge" style="display:none">0</span>
+    </button>
+    <button class="nav-icon-btn avatar-btn" onclick="showPage('profile')">
+      <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=80&h=80&fit=crop" class="nav-avatar" alt="user" />
+    </button>
+    <button class="hamburger" id="hamburger" onclick="toggleMobileMenu()"><i class="fas fa-bars"></i></button>
+  </div>
+</header>
+
+<div class="mobile-menu" id="mobile-menu">
+  <a onclick="showPage('home');closeMobileMenu()"><i class="fas fa-home"></i> Home</a>
+  <a onclick="showPage('phones');closeMobileMenu()"><i class="fas fa-mobile-alt"></i> Phones</a>
+  <a onclick="showPage('tabs');closeMobileMenu()"><i class="fas fa-tablet-alt"></i> Tablets</a>
+  <a onclick="showPage('accessories');closeMobileMenu()"><i class="fas fa-headphones"></i> Accessories</a>
+  <a onclick="showPage('deals');closeMobileMenu()"><i class="fas fa-fire" style="color:#ff3d71"></i> Hot Deals</a>
+  <a onclick="showPage('profile');closeMobileMenu()"><i class="fas fa-user"></i> Profile</a>
+</div>
+
+<main class="main-content" id="main-content">
+
+  <!-- HOME PAGE -->
+  <section class="page active" id="page-home">
+
+    <!-- HERO SLIDER -->
+    <div class="hero-section">
+      <div class="hero-slides-wrap">
+        <div class="hero-slide hs-active" id="hs0">
+          <div class="hs-text">
+            <span class="hs-badge">New Drop 🔥</span>
+            <h1>iPhone 16 Pro Max</h1>
+            <p>Titanium. Smarter. Faster. The most powerful iPhone ever crafted with A18 Pro chip.</p>
+            <div class="hs-btns">
+              <button class="btn-primary" onclick="showPage('phones');setActiveNav(document.querySelector('[data-page=phones]'))">Shop Phones</button>
+              <button class="btn-ghost" onclick="openDetailById('p1')">View Details</button>
+            </div>
+          </div>
+          <div class="hs-img-wrap"><img src="https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=700&h=600&fit=crop" alt="iPhone 16" /></div>
+        </div>
+        <div class="hero-slide" id="hs1">
+          <div class="hs-text">
+            <span class="hs-badge" style="background:linear-gradient(135deg,#ff6b35,#ff3d71)">Galaxy S25 ✨</span>
+            <h1>Samsung Galaxy S25 Ultra</h1>
+            <p>Galaxy AI meets Android perfection. The future of mobile photography is here.</p>
+            <div class="hs-btns">
+              <button class="btn-primary" style="background:linear-gradient(135deg,#ff6b35,#ff3d71)" onclick="showPage('phones')">Shop Now</button>
+              <button class="btn-ghost" onclick="openDetailById('p2')">View Details</button>
+            </div>
+          </div>
+          <div class="hs-img-wrap"><img src="https://images.unsplash.com/photo-1585060544812-6b45742d762f?w=700&h=600&fit=crop" alt="Samsung S25" /></div>
+        </div>
+        <div class="hero-slide" id="hs2">
+          <div class="hs-text">
+            <span class="hs-badge" style="background:linear-gradient(135deg,#7c3aed,#a855f7)">iPad Pro 💜</span>
+            <h1>iPad Pro M4</h1>
+            <p>Your next computer. Impossibly thin at just 5.1mm. Powered by the M4 chip.</p>
+            <div class="hs-btns">
+              <button class="btn-primary" style="background:linear-gradient(135deg,#7c3aed,#a855f7)" onclick="showPage('tabs')">Shop Tablets</button>
+              <button class="btn-ghost" onclick="openDetailById('t1')">View Details</button>
+            </div>
+          </div>
+          <div class="hs-img-wrap"><img src="https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=700&h=600&fit=crop" alt="iPad Pro" /></div>
+        </div>
+        <div class="hero-controls">
+          <button class="hctrl-btn" onclick="changeHeroSlide(-1)"><i class="fas fa-chevron-left"></i></button>
+          <div class="hero-dots">
+            <span class="hdot active" onclick="setHeroSlide(0)"></span>
+            <span class="hdot" onclick="setHeroSlide(1)"></span>
+            <span class="hdot" onclick="setHeroSlide(2)"></span>
+          </div>
+          <button class="hctrl-btn" onclick="changeHeroSlide(1)"><i class="fas fa-chevron-right"></i></button>
+        </div>
+      </div>
+      <div class="stats-strip">
+        <div class="stat-item"><i class="fas fa-box-open"></i><div><strong>50K+</strong><span>Products</span></div></div>
+        <div class="stat-div"></div>
+        <div class="stat-item"><i class="fas fa-medal"></i><div><strong>120+</strong><span>Top Brands</span></div></div>
+        <div class="stat-div"></div>
+        <div class="stat-item"><i class="fas fa-users"></i><div><strong>2M+</strong><span>Customers</span></div></div>
+        <div class="stat-div"></div>
+        <div class="stat-item"><i class="fas fa-truck"></i><div><strong>Free</strong><span>Shipping $999+</span></div></div>
+      </div>
+    </div>
+
+    <!-- CATEGORIES -->
+    <div class="section-wrap">
+      <div class="section-head"><h2>Shop by Category</h2><p>Find exactly what you're looking for</p></div>
+      <div class="category-cards">
+        <div class="cat-card" onclick="showPage('phones');setActiveNav(document.querySelector('[data-page=phones]'))">
+          <div class="cat-glow" style="background:rgba(255,61,113,0.3)"></div>
+          <div class="cat-icon-wrap" style="background:linear-gradient(135deg,#ff3d71,#ff6b9a)"><i class="fas fa-mobile-alt"></i></div>
+          <h3>Smartphones</h3><p>6 products · Latest flagship phones</p>
+          <span class="cat-cta">Shop Now <i class="fas fa-arrow-right"></i></span>
+        </div>
+        <div class="cat-card" onclick="showPage('tabs');setActiveNav(document.querySelector('[data-page=tabs]'))">
+          <div class="cat-glow" style="background:rgba(124,58,237,0.3)"></div>
+          <div class="cat-icon-wrap" style="background:linear-gradient(135deg,#7c3aed,#a855f7)"><i class="fas fa-tablet-alt"></i></div>
+          <h3>Tablets</h3><p>6 products · iPad, Galaxy & more</p>
+          <span class="cat-cta">Shop Now <i class="fas fa-arrow-right"></i></span>
+        </div>
+        <div class="cat-card" onclick="showPage('accessories');setActiveNav(document.querySelector('[data-page=accessories]'))">
+          <div class="cat-glow" style="background:rgba(0,212,170,0.3)"></div>
+          <div class="cat-icon-wrap" style="background:linear-gradient(135deg,#00d4aa,#0099cc)"><i class="fas fa-headphones"></i></div>
+          <h3>Accessories</h3><p>6 products · Audio, cases & more</p>
+          <span class="cat-cta">Shop Now <i class="fas fa-arrow-right"></i></span>
+        </div>
+        <div class="cat-card" onclick="showPage('deals');setActiveNav(document.querySelector('[data-page=deals]'))">
+          <div class="cat-glow" style="background:rgba(245,158,11,0.3)"></div>
+          <div class="cat-icon-wrap" style="background:linear-gradient(135deg,#f59e0b,#ef4444)"><i class="fas fa-tags"></i></div>
+          <h3>Hot Deals</h3><p>Up to 60% off · Today only</p>
+          <span class="cat-cta">Grab Now <i class="fas fa-arrow-right"></i></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- FLASH DEALS -->
+    <div class="section-wrap">
+      <div class="section-head">
+        <div><h2><i class="fas fa-fire" style="color:#ff3d71;margin-right:8px"></i>Flash Deals</h2><p>Grab them before the timer hits zero</p></div>
+        <div class="flash-timer-wrap"><span>Ends in</span><div class="timer-pill" id="web-timer">02:47:13</div></div>
+      </div>
+      <div class="products-row-scroll" id="web-flash-products"></div>
+    </div>
+
+    <!-- TRENDING -->
+    <div class="section-wrap">
+      <div class="section-head">
+        <div><h2>Trending Now</h2><p>What everyone is buying this week</p></div>
+        <button class="btn-outline" onclick="showPage('phones');setActiveNav(document.querySelector('[data-page=phones]'))">View All</button>
+      </div>
+      <div class="products-grid" id="web-trending"></div>
+    </div>
+
+    <!-- PROMO BANNER -->
+    <div class="section-wrap">
+      <div class="promo-banner">
+        <div class="promo-text">
+          <span class="promo-eyebrow">Limited Time Offer</span>
+          <h2>Up to <span class="promo-hl">60% OFF</span><br>on Top Brands</h2>
+          <p>Apple, Samsung, Sony, Google — all deeply discounted</p>
+          <button class="btn-primary" onclick="showPage('deals');setActiveNav(document.querySelector('[data-page=deals]'))">Explore All Deals <i class="fas fa-arrow-right"></i></button>
+        </div>
+        <div class="promo-imgs">
+          <img src="https://images.unsplash.com/photo-1546868871-7041f2a55e12?w=220&h=220&fit=crop" alt="watch" />
+          <img src="https://images.unsplash.com/photo-1588423771073-b8903fead714?w=220&h=220&fit=crop" alt="airpods" />
+          <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=220&h=220&fit=crop" alt="headphones" />
+          <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=220&h=220&fit=crop" alt="charger" />
+        </div>
+      </div>
+    </div>
+
+    <!-- ALL PRODUCTS -->
+    <div class="section-wrap">
+      <div class="section-head"><h2>All Products</h2><p>Our complete collection — 18 products</p></div>
+      <div class="products-grid" id="web-all-products"></div>
+    </div>
+
+  </section>
+
+  <!-- PHONES PAGE -->
+  <section class="page" id="page-phones">
+    <div class="page-hero-bar" style="--grad:linear-gradient(135deg,#1a0820,#2d0f1e,#0a1220)">
+      <div class="phb-text"><span class="phb-badge">📱 Smartphones</span><h1>Next-Gen Phones</h1><p>The latest flagships from Apple, Samsung, Google &amp; more</p></div>
+      <img src="https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=480&h=320&fit=crop" alt="phones" class="phb-img" />
+    </div>
+    <div class="section-wrap">
+      <div class="filter-bar" id="phone-filter-bar">
+        <div class="chips-wrap">
+          <button class="chip active" onclick="filterProducts('phones','All',this)">All</button>
+          <button class="chip" onclick="filterProducts('phones','Apple',this)">Apple</button>
+          <button class="chip" onclick="filterProducts('phones','Samsung',this)">Samsung</button>
+          <button class="chip" onclick="filterProducts('phones','OnePlus',this)">OnePlus</button>
+          <button class="chip" onclick="filterProducts('phones','Google',this)">Google</button>
+          <button class="chip" onclick="filterProducts('phones','Xiaomi',this)">Xiaomi</button>
+          <button class="chip" onclick="filterProducts('phones','Sony',this)">Sony</button>
+        </div>
+        <select class="sort-select" onchange="sortProducts('phones',this.value)">
+          <option value="default">Sort: Featured</option>
+          <option value="price-asc">Price ↑</option>
+          <option value="price-desc">Price ↓</option>
+          <option value="rating">Top Rated</option>
+        </select>
+      </div>
+      <div class="products-grid" id="phones-grid"></div>
+    </div>
+  </section>
+
+  <!-- TABLETS PAGE -->
+  <section class="page" id="page-tabs">
+    <div class="page-hero-bar" style="--grad:linear-gradient(135deg,#0f0a2e,#1a0f4e,#0a0f2e)">
+      <div class="phb-text"><span class="phb-badge" style="background:linear-gradient(135deg,#7c3aed,#a855f7)">💻 Tablets</span><h1>Powerful Tablets</h1><p>From ultra-thin iPads to Android powerhouses</p></div>
+      <img src="https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=480&h=320&fit=crop" alt="tablets" class="phb-img" />
+    </div>
+    <div class="section-wrap">
+      <div class="filter-bar">
+        <div class="chips-wrap">
+          <button class="chip active" onclick="filterProducts('tabs','All',this)">All</button>
+          <button class="chip" onclick="filterProducts('tabs','Apple',this)">Apple</button>
+          <button class="chip" onclick="filterProducts('tabs','Samsung',this)">Samsung</button>
+          <button class="chip" onclick="filterProducts('tabs','Lenovo',this)">Lenovo</button>
+          <button class="chip" onclick="filterProducts('tabs','Google',this)">Google</button>
+        </div>
+        <select class="sort-select" onchange="sortProducts('tabs',this.value)">
+          <option value="default">Sort: Featured</option>
+          <option value="price-asc">Price ↑</option>
+          <option value="price-desc">Price ↓</option>
+        </select>
+      </div>
+      <div class="products-grid" id="tabs-grid"></div>
+    </div>
+  </section>
+
+  <!-- ACCESSORIES PAGE -->
+  <section class="page" id="page-accessories">
+    <div class="page-hero-bar" style="--grad:linear-gradient(135deg,#0a2e1e,#0f2a2a,#0a1e2e)">
+      <div class="phb-text"><span class="phb-badge" style="background:linear-gradient(135deg,#00d4aa,#0099cc)">🎧 Accessories</span><h1>Premium Gear</h1><p>Complete your setup with world-class accessories</p></div>
+      <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=480&h=320&fit=crop" alt="accessories" class="phb-img" />
+    </div>
+    <div class="section-wrap">
+      <div class="filter-bar">
+        <div class="chips-wrap">
+          <button class="chip active" onclick="filterProducts('accessories','All',this)">All</button>
+          <button class="chip" onclick="filterProducts('accessories','Apple',this)">Apple</button>
+          <button class="chip" onclick="filterProducts('accessories','Sony',this)">Sony</button>
+          <button class="chip" onclick="filterProducts('accessories','Samsung',this)">Samsung</button>
+          <button class="chip" onclick="filterProducts('accessories','Anker',this)">Anker</button>
+        </div>
+        <select class="sort-select" onchange="sortProducts('accessories',this.value)">
+          <option value="default">Sort: Featured</option>
+          <option value="price-asc">Price ↑</option>
+          <option value="price-desc">Price ↓</option>
+        </select>
+      </div>
+      <div class="products-grid" id="accessories-grid"></div>
+    </div>
+  </section>
+
+  <!-- DEALS PAGE -->
+  <section class="page" id="page-deals">
+    <div class="deals-hero-full">
+      <div class="dhf-left">
+        <span class="phb-badge" style="background:linear-gradient(135deg,#f59e0b,#ef4444)">🔥 Flash Sales</span>
+        <h1>Massive Savings</h1>
+        <h2>Up to <span>60% OFF</span></h2>
+        <p>Limited time offers on the hottest brands. Stock is running out fast!</p>
+        <button class="btn-primary" onclick="document.getElementById('deals-grid-anchor').scrollIntoView({behavior:'smooth'})">Browse All Deals <i class="fas fa-arrow-down"></i></button>
+      </div>
+      <div class="dhf-right">
+        <p class="timer-label">Deal ends in</p>
+        <div class="big-timer">
+          <div class="bt-unit"><span id="bt-h">02</span><small>Hours</small></div>
+          <div class="bt-sep">:</div>
+          <div class="bt-unit"><span id="bt-m">47</span><small>Mins</small></div>
+          <div class="bt-sep">:</div>
+          <div class="bt-unit"><span id="bt-s">13</span><small>Secs</small></div>
+        </div>
+      </div>
+    </div>
+    <div class="section-wrap" id="deals-grid-anchor">
+      <div class="section-head"><h2>All Deals</h2><p>Best prices we've ever offered</p></div>
+      <div class="products-grid" id="deals-grid"></div>
+    </div>
+  </section>
+
+  <!-- WISHLIST PAGE -->
+  <section class="page" id="page-wishlist">
+    <div class="section-wrap">
+      <div class="section-head"><h2><i class="fas fa-heart" style="color:#ff3d71;margin-right:8px"></i>My Wishlist</h2><p id="wishlist-subtitle">Items saved for later</p></div>
+      <div class="products-grid" id="wishlist-grid"></div>
+    </div>
+  </section>
+
+  <!-- PROFILE PAGE -->
+  <section class="page" id="page-profile">
+    <div class="profile-layout">
+      <aside class="profile-sidebar">
+        <div class="profile-card-hero">
+          <div class="profile-avatar-ring"><img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=160&h=160&fit=crop" alt="user" /></div>
+          <h2>Alex Chen</h2>
+          <p>alex.chen@email.com</p>
+          <div class="profile-stats-row">
+            <div class="pst"><strong>12</strong><span>Orders</span></div>
+            <div class="pst"><strong>4</strong><span>Saved</span></div>
+            <div class="pst"><strong>★4.8</strong><span>Rating</span></div>
+          </div>
+        </div>
+        <nav class="profile-sidenav">
+          <button class="psnav active" onclick="switchProfileTab(this,'tab-orders')"><i class="fas fa-box-open"></i>My Orders</button>
+          <button class="psnav" onclick="switchProfileTab(this,'tab-addresses')"><i class="fas fa-map-marker-alt"></i>Addresses</button>
+          <button class="psnav" onclick="switchProfileTab(this,'tab-payment')"><i class="fas fa-credit-card"></i>Payment</button>
+          <button class="psnav" onclick="switchProfileTab(this,'tab-settings')"><i class="fas fa-cog"></i>Settings</button>
+          <button class="psnav danger" onclick="showToast('👋 Logged out!')"><i class="fas fa-sign-out-alt"></i>Log Out</button>
+        </nav>
+      </aside>
+      <div class="profile-main">
+        <div class="profile-tab active" id="tab-orders">
+          <h3 class="tab-title">Recent Orders</h3>
+          <div id="orders-list"></div>
+        </div>
+        <div class="profile-tab" id="tab-addresses">
+          <h3 class="tab-title">Saved Addresses</h3>
+          <div class="addr-grid">
+            <div class="addr-card"><div class="addr-icon"><i class="fas fa-home"></i></div><div><strong>Home</strong><p>123 Tech Street, Silicon Valley, CA 94025</p></div><span class="addr-default">Default</span></div>
+            <div class="addr-card"><div class="addr-icon"><i class="fas fa-briefcase"></i></div><div><strong>Office</strong><p>456 Innovation Blvd, San Francisco, CA 94102</p></div></div>
+          </div>
+          <button class="btn-outline mt-16"><i class="fas fa-plus"></i> Add New Address</button>
+        </div>
+        <div class="profile-tab" id="tab-payment">
+          <h3 class="tab-title">Payment Methods</h3>
+          <div class="pay-cards-grid">
+            <div class="pay-card visa-card"><div class="pc-chip"><i class="fas fa-sim-card"></i></div><div class="pc-num">•••• •••• •••• 4242</div><div class="pc-bot"><span>Alex Chen</span><span>12/27</span><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Visa_Inc._logo.svg/200px-Visa_Inc._logo.svg.png" alt="visa" style="height:18px;filter:brightness(0) invert(1);opacity:0.8" /></div></div>
+            <div class="pay-card master-card"><div class="pc-chip"><i class="fas fa-sim-card"></i></div><div class="pc-num">•••• •••• •••• 8888</div><div class="pc-bot"><span>Alex Chen</span><span>09/26</span><i class="fab fa-cc-mastercard" style="font-size:22px;opacity:0.8"></i></div></div>
+          </div>
+          <button class="btn-outline mt-16"><i class="fas fa-plus"></i> Add New Card</button>
+        </div>
+        <div class="profile-tab" id="tab-settings">
+          <h3 class="tab-title">Account Settings</h3>
+          <div class="settings-form">
+            <div class="form-2col">
+              <div class="form-group"><label>First Name</label><input type="text" value="Alex" class="form-input" /></div>
+              <div class="form-group"><label>Last Name</label><input type="text" value="Chen" class="form-input" /></div>
+            </div>
+            <div class="form-group"><label>Email</label><input type="email" value="alex.chen@email.com" class="form-input" /></div>
+            <div class="form-group"><label>Phone</label><input type="tel" value="+1 (555) 234-5678" class="form-input" /></div>
+            <div class="toggle-row"><span>Email Notifications</span><label class="toggle"><input type="checkbox" checked /><span class="toggle-slider"></span></label></div>
+            <div class="toggle-row"><span>SMS Alerts</span><label class="toggle"><input type="checkbox" /><span class="toggle-slider"></span></label></div>
+            <button class="btn-primary" onclick="showToast('✅ Settings saved!')">Save Changes</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SEARCH RESULTS -->
+  <section class="page" id="page-search">
+    <div class="section-wrap">
+      <div class="section-head"><div><h2>Search Results</h2><p id="search-result-count"></p></div></div>
+      <div class="products-grid" id="search-grid"></div>
+    </div>
+  </section>
+
+</main>
+
+<!-- FOOTER -->
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-brand-col">
+      <div class="footer-logo"><div class="brand-icon"><i class="fas fa-bolt"></i></div><span class="brand-text">NexDrop</span></div>
+      <p>Next-gen gadgets, dropped daily. The future of tech retail.</p>
+      <div class="footer-socials">
+        <a href="#"><i class="fab fa-instagram"></i></a>
+        <a href="#"><i class="fab fa-twitter"></i></a>
+        <a href="#"><i class="fab fa-youtube"></i></a>
+        <a href="#"><i class="fab fa-tiktok"></i></a>
+      </div>
+    </div>
+    <div class="footer-links-col"><h4>Shop</h4><a onclick="showPage('phones')">Smartphones</a><a onclick="showPage('tabs')">Tablets</a><a onclick="showPage('accessories')">Accessories</a><a onclick="showPage('deals')">Hot Deals</a></div>
+    <div class="footer-links-col"><h4>Company</h4><a href="#">About Us</a><a href="#">Careers</a><a href="#">Press</a><a href="#">Blog</a></div>
+    <div class="footer-links-col"><h4>Support</h4><a href="#">Help Center</a><a href="#">Shipping</a><a href="#">Returns</a><a href="#">Contact</a></div>
+    <div class="footer-newsletter-col">
+      <h4>Stay in the Loop</h4>
+      <p>Get the latest drops and exclusive deals.</p>
+      <div class="nl-form"><input type="email" placeholder="your@email.com" /><button onclick="showToast('🎉 Subscribed!')"><i class="fas fa-arrow-right"></i></button></div>
+    </div>
+  </div>
+  <div class="footer-bottom"><p>© 2026 NexDrop. All rights reserved.</p><p>Privacy · Terms · Cookies</p></div>
+</footer>
+
+<script src="Web ui.js"></script>
+</body>
+</html>

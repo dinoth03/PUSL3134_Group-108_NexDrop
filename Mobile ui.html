@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NexDrop – Mobile Shop</title>
+  <link rel="stylesheet" href="Mobile ui.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,400&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+</head>
+<body>
+
+  <!-- ===== MOBILE FRAME ===== -->
+  <div class="device-wrapper">
+    <div class="phone-frame">
+      <div class="phone-notch">
+        <span class="notch-time">9:41</span>
+        <span class="notch-icons"><i class="fas fa-signal"></i> <i class="fas fa-wifi"></i> <i class="fas fa-battery-full"></i></span>
+      </div>
+
+      <!-- ===== SCREENS ===== -->
+      <div class="screen-container" id="screens">
+
+        <!-- SPLASH SCREEN -->
+        <div class="screen active" id="screen-splash">
+          <div class="splash-bg">
+            <div class="splash-blob b1"></div>
+            <div class="splash-blob b2"></div>
+            <div class="splash-blob b3"></div>
+          </div>
+          <div class="splash-content">
+            <div class="logo-ring">
+              <div class="logo-inner"><i class="fas fa-bolt"></i></div>
+            </div>
+            <h1 class="brand-name">NexDrop</h1>
+            <p class="brand-tagline">Next-gen gadgets, dropped daily.</p>
+            <button class="btn-splash" onclick="goTo('screen-home')">Shop Now <i class="fas fa-arrow-right"></i></button>
+            <p style="margin-top: 20px; font-size: 12px;"><a href="index.html" style="color: rgba(255,255,255,0.7); text-decoration: none;">← Back to Menu</a></p>
+          </div>
+        </div>
+
+        <!-- HOME SCREEN -->
+        <div class="screen" id="screen-home">
+          <!-- TOP BAR -->
+          <div class="topbar">
+            <div class="topbar-left">
+              <div class="avatar" onclick="goTo('screen-profile')">
+                <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=80&h=80&fit=crop" alt="user" />
+              </div>
+              <div>
+                <p class="greeting">Good morning 👋</p>
+                <p class="username">Alex Chen</p>
+              </div>
+            </div>
+            <div class="topbar-right">
+              <button class="icon-btn notif-btn" onclick="goTo('screen-cart')">
+                <i class="fas fa-shopping-bag"></i>
+                <span class="badge">3</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- SEARCH -->
+          <div class="search-wrap">
+            <i class="fas fa-search search-icon"></i>
+            <input type="text" class="search-input" placeholder="Search phones, tabs, gear…" />
+            <button class="filter-btn"><i class="fas fa-sliders-h"></i></button>
+          </div>
+
+          <!-- HERO BANNER -->
+          <div class="hero-banner">
+            <div class="hero-slide active-slide" id="slide-0">
+              <div class="hero-text">
+                <span class="hero-badge">New Drop 🔥</span>
+                <h2>iPhone 16 Pro Max</h2>
+                <p>Titanium. Smarter. Faster.</p>
+                <button class="hero-cta" onclick="goTo('screen-phones')">Explore</button>
+              </div>
+              <img src="https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=300&h=300&fit=crop" alt="phone" class="hero-img" />
+            </div>
+            <div class="hero-slide" id="slide-1">
+              <div class="hero-text">
+                <span class="hero-badge" style="background:#ff6b35">Galaxy S25 ✨</span>
+                <h2>Samsung Galaxy S25</h2>
+                <p>AI meets Android perfection.</p>
+                <button class="hero-cta" style="background:#ff6b35" onclick="goTo('screen-phones')">Explore</button>
+              </div>
+              <img src="https://images.unsplash.com/photo-1585060544812-6b45742d762f?w=300&h=300&fit=crop" alt="galaxy" class="hero-img" />
+            </div>
+            <div class="hero-slide" id="slide-2">
+              <div class="hero-text">
+                <span class="hero-badge" style="background:#7c3aed">iPad Pro 💜</span>
+                <h2>iPad Pro M4</h2>
+                <p>Your next computer. Thinner.</p>
+                <button class="hero-cta" style="background:#7c3aed" onclick="goTo('screen-tabs')">Explore</button>
+              </div>
+              <img src="https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=300&h=300&fit=crop" alt="ipad" class="hero-img" />
+            </div>
+            <div class="slide-dots">
+              <span class="dot active" onclick="setSlide(0)"></span>
+              <span class="dot" onclick="setSlide(1)"></span>
+              <span class="dot" onclick="setSlide(2)"></span>
+            </div>
+          </div>
+
+          <!-- CATEGORIES -->
+          <div class="section-header">
+            <h3>Categories</h3>
+            <a class="see-all" href="#">See all</a>
+          </div>
+          <div class="categories-row">
+            <button class="cat-pill active" onclick="goTo('screen-phones')">
+              <span class="cat-icon" style="background:#fee2e2"><i class="fas fa-mobile-alt" style="color:#ef4444"></i></span>
+              Phones
+            </button>
+            <button class="cat-pill" onclick="goTo('screen-tabs')">
+              <span class="cat-icon" style="background:#e0e7ff"><i class="fas fa-tablet-alt" style="color:#6366f1"></i></span>
+              Tablets
+            </button>
+            <button class="cat-pill" onclick="goTo('screen-accessories')">
+              <span class="cat-icon" style="background:#d1fae5"><i class="fas fa-headphones" style="color:#10b981"></i></span>
+              Gear
+            </button>
+            <button class="cat-pill" onclick="goTo('screen-deals')">
+              <span class="cat-icon" style="background:#fef3c7"><i class="fas fa-tags" style="color:#f59e0b"></i></span>
+              Deals
+            </button>
+          </div>
+
+          <!-- FLASH DEALS -->
+          <div class="flash-bar">
+            <div class="flash-left"><i class="fas fa-fire"></i> Flash Deals</div>
+            <div class="flash-timer" id="flash-timer">02:47:13</div>
+          </div>
+          <div class="products-scroll" id="flash-products">
+            <!-- injected by JS -->
+          </div>
+
+          <!-- TRENDING -->
+          <div class="section-header mt-8">
+            <h3>Trending Now</h3>
+            <a class="see-all" href="#">See all</a>
+          </div>
+          <div class="products-grid" id="trending-products">
+            <!-- injected by JS -->
+          </div>
+        </div>
+
+        <!-- PHONES SCREEN -->
+        <div class="screen" id="screen-phones">
+          <div class="screen-header">
+            <button class="back-btn" onclick="goBack()"><i class="fas fa-chevron-left"></i></button>
+            <h2>Smartphones</h2>
+            <button class="icon-btn"><i class="fas fa-search"></i></button>
+          </div>
+          <div class="filter-chips" id="phone-filters">
+            <button class="chip active">All</button>
+            <button class="chip">Apple</button>
+            <button class="chip">Samsung</button>
+            <button class="chip">OnePlus</button>
+            <button class="chip">Xiaomi</button>
+          </div>
+          <div class="products-grid-full" id="phones-products">
+            <!-- injected by JS -->
+          </div>
+        </div>
+
+        <!-- TABLETS SCREEN -->
+        <div class="screen" id="screen-tabs">
+          <div class="screen-header">
+            <button class="back-btn" onclick="goBack()"><i class="fas fa-chevron-left"></i></button>
+            <h2>Tablets</h2>
+            <button class="icon-btn"><i class="fas fa-search"></i></button>
+          </div>
+          <div class="filter-chips">
+            <button class="chip active">All</button>
+            <button class="chip">Apple</button>
+            <button class="chip">Samsung</button>
+            <button class="chip">Lenovo</button>
+          </div>
+          <div class="products-grid-full" id="tabs-products">
+            <!-- injected by JS -->
+          </div>
+        </div>
+
+        <!-- ACCESSORIES SCREEN -->
+        <div class="screen" id="screen-accessories">
+          <div class="screen-header">
+            <button class="back-btn" onclick="goBack()"><i class="fas fa-chevron-left"></i></button>
+            <h2>Accessories</h2>
+            <button class="icon-btn"><i class="fas fa-search"></i></button>
+          </div>
+          <div class="filter-chips">
+            <button class="chip active">All</button>
+            <button class="chip">Audio</button>
+            <button class="chip">Cases</button>
+            <button class="chip">Chargers</button>
+            <button class="chip">Watches</button>
+          </div>
+          <div class="products-grid-full" id="accessories-products">
+            <!-- injected by JS -->
+          </div>
+        </div>
+
+        <!-- DEALS SCREEN -->
+        <div class="screen" id="screen-deals">
+          <div class="screen-header">
+            <button class="back-btn" onclick="goBack()"><i class="fas fa-chevron-left"></i></button>
+            <h2>Hot Deals</h2>
+            <button class="icon-btn"><i class="fas fa-fire" style="color:#ef4444"></i></button>
+          </div>
+          <div class="deals-hero">
+            <div class="deals-hero-text">
+              <p class="deals-label">Limited Time</p>
+              <h2>Up to <span>60% OFF</span></h2>
+              <p>on top brands</p>
+            </div>
+          </div>
+          <div class="products-grid-full" id="deals-products">
+            <!-- injected by JS -->
+          </div>
+        </div>
+
+        <!-- CART SCREEN -->
+        <div class="screen" id="screen-cart">
+          <div class="screen-header">
+            <button class="back-btn" onclick="goBack()"><i class="fas fa-chevron-left"></i></button>
+            <h2>My Cart</h2>
+            <button class="icon-btn" onclick="clearCart()"><i class="fas fa-trash-alt" style="color:#ef4444"></i></button>
+          </div>
+          <div class="cart-items" id="cart-items-list">
+            <!-- injected by JS -->
+          </div>
+          <div class="cart-summary" id="cart-summary">
+            <!-- injected by JS -->
+          </div>
+        </div>
+
+        <!-- PRODUCT DETAIL SCREEN -->
+        <div class="screen" id="screen-detail">
+          <div class="detail-container" id="detail-content">
+            <!-- injected by JS -->
+          </div>
+        </div>
+
+        <!-- PROFILE SCREEN -->
+        <div class="screen" id="screen-profile">
+          <div class="profile-hero">
+            <button class="back-btn back-white" onclick="goBack()"><i class="fas fa-chevron-left"></i></button>
+            <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=120&h=120&fit=crop" class="profile-avatar" alt="user" />
+            <h2 class="profile-name">Alex Chen</h2>
+            <p class="profile-email"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="9cfdf0f9e4b2fff4f9f2dcf9f1fdf5f0b2fff3f1">[email&#160;protected]</a></p>
+            <div class="profile-stats">
+              <div class="pstat"><strong>12</strong><span>Orders</span></div>
+              <div class="pstat"><strong>4</strong><span>Wishlist</span></div>
+              <div class="pstat"><strong>★ 4.8</strong><span>Rating</span></div>
+            </div>
+          </div>
+          <div class="profile-menu">
+            <div class="pmenu-item"><i class="fas fa-box-open"></i> My Orders <i class="fas fa-chevron-right ml-auto"></i></div>
+            <div class="pmenu-item"><i class="fas fa-heart"></i> Wishlist <i class="fas fa-chevron-right ml-auto"></i></div>
+            <div class="pmenu-item"><i class="fas fa-map-marker-alt"></i> Addresses <i class="fas fa-chevron-right ml-auto"></i></div>
+            <div class="pmenu-item"><i class="fas fa-credit-card"></i> Payment Methods <i class="fas fa-chevron-right ml-auto"></i></div>
+            <div class="pmenu-item"><i class="fas fa-bell"></i> Notifications <i class="fas fa-chevron-right ml-auto"></i></div>
+            <div class="pmenu-item" style="color:#ef4444"><i class="fas fa-sign-out-alt"></i> Log Out <i class="fas fa-chevron-right ml-auto"></i></div>
+          </div>
+        </div>
+
+      </div><!-- /screens -->
+
+      <!-- BOTTOM NAV -->
+      <nav class="bottom-nav" id="bottom-nav">
+        <button class="nav-btn active" onclick="goTo('screen-home'); setNav(this)">
+          <i class="fas fa-home"></i><span>Home</span>
+        </button>
+        <button class="nav-btn" onclick="goTo('screen-phones'); setNav(this)">
+          <i class="fas fa-mobile-alt"></i><span>Phones</span>
+        </button>
+        <button class="nav-btn nav-center" onclick="goTo('screen-deals'); setNav(this)">
+          <i class="fas fa-fire"></i><span>Deals</span>
+        </button>
+        <button class="nav-btn" onclick="goTo('screen-cart'); setNav(this)">
+          <i class="fas fa-shopping-bag"></i><span>Cart</span>
+        </button>
+        <button class="nav-btn" onclick="goTo('screen-profile'); setNav(this)">
+          <i class="fas fa-user"></i><span>Profile</span>
+        </button>
+      </nav>
+    </div>
+  </div>
+
+  <script src="Mobile ui.js"></script>
+</body>
+</html>
