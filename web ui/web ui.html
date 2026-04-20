@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>NexDrop — Next-Gen Gadgets</title>
   <link rel="stylesheet" href="web ui.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,400&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 </head>
 <body>
@@ -15,10 +15,7 @@
 <div class="bg-blob b3"></div>
 <div class="toast" id="toast"></div>
 
-<a class="switch-mobile-btn" href="../mobile ui/mobile ui.html" title="Open Mobile UI" aria-label="Open Mobile UI">
-  <i class="fas fa-mobile-alt"></i>
-  <span>Try Mobile View</span>
-</a>
+
 
 <!-- CART DRAWER -->
 <div class="cart-overlay" id="cart-overlay" onclick="closeCart()"></div>
@@ -133,7 +130,7 @@
           <button class="hctrl-btn" onclick="changeHeroSlide(1)"><i class="fas fa-chevron-right"></i></button>
         </div>
       </div>
-      <div class="stats-strip">
+      <div class="stats-strip reveal">
         <div class="stat-item"><i class="fas fa-box-open"></i><div><strong>50K+</strong><span>Products</span></div></div>
         <div class="stat-div"></div>
         <div class="stat-item"><i class="fas fa-medal"></i><div><strong>120+</strong><span>Top Brands</span></div></div>
@@ -145,7 +142,7 @@
     </div>
 
     <!-- CATEGORIES -->
-    <div class="section-wrap">
+    <div class="section-wrap reveal">
       <div class="section-head"><h2>Shop by Category</h2><p>Find exactly what you're looking for</p></div>
       <div class="category-cards">
         <div class="cat-card" onclick="showPage('phones');setActiveNav(document.querySelector('[data-page=phones]'))">
@@ -176,7 +173,7 @@
     </div>
 
     <!-- FLASH DEALS -->
-    <div class="section-wrap">
+    <div class="section-wrap reveal-left">
       <div class="section-head">
         <div><h2><i class="fas fa-fire" style="color:#ff3d71;margin-right:8px"></i>Flash Deals</h2><p>Grab them before the timer hits zero</p></div>
         <div class="flash-timer-wrap"><span>Ends in</span><div class="timer-pill" id="web-timer">02:47:13</div></div>
@@ -185,7 +182,7 @@
     </div>
 
     <!-- TRENDING -->
-    <div class="section-wrap">
+    <div class="section-wrap reveal-right">
       <div class="section-head">
         <div><h2>Trending Now</h2><p>What everyone is buying this week</p></div>
         <button class="btn-outline" onclick="showPage('phones');setActiveNav(document.querySelector('[data-page=phones]'))">View All</button>
@@ -194,7 +191,7 @@
     </div>
 
     <!-- PROMO BANNER -->
-    <div class="section-wrap">
+    <div class="section-wrap reveal-scale">
       <div class="promo-banner">
         <div class="promo-text">
           <span class="promo-eyebrow">Limited Time Offer</span>
@@ -212,7 +209,7 @@
     </div>
 
     <!-- ALL PRODUCTS -->
-    <div class="section-wrap">
+    <div class="section-wrap reveal">
       <div class="section-head"><h2>All Products</h2><p>Our complete collection — 18 products</p></div>
       <div class="products-grid" id="web-all-products"></div>
     </div>
@@ -225,7 +222,7 @@
       <div class="phb-text"><span class="phb-badge">📱 Smartphones</span><h1>Next-Gen Phones</h1><p>The latest flagships from Apple, Samsung, Google &amp; more</p></div>
       <img src="https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=480&h=320&fit=crop" alt="phones" class="phb-img" />
     </div>
-    <div class="section-wrap">
+    <div class="section-wrap reveal">
       <div class="filter-bar" id="phone-filter-bar">
         <div class="chips-wrap">
           <button class="chip active" onclick="filterProducts('phones','All',this)">All</button>
@@ -253,7 +250,7 @@
       <div class="phb-text"><span class="phb-badge" style="background:linear-gradient(135deg,#7c3aed,#a855f7)">💻 Tablets</span><h1>Powerful Tablets</h1><p>From ultra-thin iPads to Android powerhouses</p></div>
       <img src="https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=480&h=320&fit=crop" alt="tablets" class="phb-img" />
     </div>
-    <div class="section-wrap">
+    <div class="section-wrap reveal">
       <div class="filter-bar">
         <div class="chips-wrap">
           <button class="chip active" onclick="filterProducts('tabs','All',this)">All</button>
@@ -278,7 +275,7 @@
       <div class="phb-text"><span class="phb-badge" style="background:linear-gradient(135deg,#00d4aa,#0099cc)">🎧 Accessories</span><h1>Premium Gear</h1><p>Complete your setup with world-class accessories</p></div>
       <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=480&h=320&fit=crop" alt="accessories" class="phb-img" />
     </div>
-    <div class="section-wrap">
+    <div class="section-wrap reveal">
       <div class="filter-bar">
         <div class="chips-wrap">
           <button class="chip active" onclick="filterProducts('accessories','All',this)">All</button>
@@ -318,7 +315,7 @@
         </div>
       </div>
     </div>
-    <div class="section-wrap" id="deals-grid-anchor">
+    <div class="section-wrap reveal" id="deals-grid-anchor">
       <div class="section-head"><h2>All Deals</h2><p>Best prices we've ever offered</p></div>
       <div class="products-grid" id="deals-grid"></div>
     </div>
